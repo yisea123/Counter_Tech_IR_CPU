@@ -371,6 +371,8 @@ void led1_task(void *pdata)
 		if (my_env.is_registered == REGISTERED){
 			switch (RUNNING_OK)//g_counter.system_status)
 			{
+				case IR_ADJ:
+					break;
 				case RUNNING_OK:
 					led_alarm (1, 20, 1000);
 					break;

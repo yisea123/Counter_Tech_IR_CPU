@@ -234,7 +234,7 @@ void re_calibration_detect (void)
     OS_CPU_SR  cpu_sr = 0u;
 #endif
 	for (i = 0; i < CHANEL_NUM; i++){
-		g_counter.view_IR_DA_value[i] = 0;
+		//g_counter.view_IR_DA_value[i] = 0;
 	}
 	calibrate_IR ();
 //	COUNT_COMPLETE = 1;
