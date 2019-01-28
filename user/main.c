@@ -362,31 +362,34 @@ void io_task (void *pdata)
 //LED1 任务 
 void led1_task(void *pdata) 
 { 
+	uint16_t adj_ctr;
 	uart3_SendData ("helloworldnick", 14);
 	my_env.system_runing = 1;
-	re_calibration_detect();
 	//vTaskCmdAnalyze_cmd_str ("print ad all");
 	while(1) 
 	{ 
 		if (my_env.is_registered == REGISTERED){
-			switch (RUNNING_OK)//g_counter.system_status)
+			switch (g_counter.system_status)
 			{
 				case IR_ADJ:
+					led_output (adj_ctr);
+					adj_ctr++;
+					delay_ms(500); 
 					break;
 				case RUNNING_OK:
 					led_alarm (1, 20, 1000);
 					break;
 				case COUNTER_ERROR:
-					led_alarm (2, 100, 2000);
+					led_alarm (2, 200, 2000);
 					break;
 				case STATUS_ERROR:
-					led_alarm (3, 100, 2000);
+					led_alarm (3, 200, 2000);
 					break;
 				case ADC_TIME_ERROR:
-					led_alarm (4, 100, 2000);
+					led_alarm (4, 200, 2000);
 					break;
 				case DETECTOR_ERROR:
-					led_alarm (5, 100, 2000);
+					led_alarm (5, 200, 2000);
 					break;
 				default:break;
 			}
@@ -404,6 +407,7 @@ void debug_task(void *pdata)
 { 
 	u8 err;	
 	uint8_t i;
+	re_calibration_detect();
 	while (1)
 	{
 		

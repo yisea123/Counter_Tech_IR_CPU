@@ -80,7 +80,7 @@ void Modbus_RegMap(void)
 	MAP_MODBUS_HOLDREG(14, tim2_irq_process_time);
 	MAP_MODBUS_HOLDREG(15, ADC1_irq_cycle);
 	MAP_MODBUS_HOLDREG(16, ADC1_process_time);
-	MAP_MODBUS_HOLDREG(17, g_counter.last_piece_chanel_id);
+	MAP_MODBUS_HOLDREG(17, g_counter.ch[0].old_std_index);
 
 	MAP_MODBUS_HOLDREG(20, chanel_pos_index);
 	MAP_MODBUS_HOLDREG(21, Modbus_com_error);
@@ -96,7 +96,7 @@ void Modbus_RegMap(void)
 	MAP_MODBUS_HOLDREG(MODBUS_SAVE_DATA_START + 0, 	g_counter.set_count_new);
 	MAP_MODBUS_HOLDREG(MODBUS_SAVE_DATA_START + 1, 	g_counter.set_pre_count_new);
 	MAP_MODBUS_HOLDREG(MODBUS_SAVE_DATA_START + 2, 	g_counter.set_door_close_delay);
-	MAP_MODBUS_HOLDREG(MODBUS_SAVE_DATA_START + 3, 	g_counter.set_adc_mode);
+	MAP_MODBUS_HOLDREG(MODBUS_SAVE_DATA_START + 3,  g_counter.set_adc_mode);
 	MAP_MODBUS_HOLDREG(MODBUS_SAVE_DATA_START + 4, 	g_counter.set_max_interval.data.h);
 	MAP_MODBUS_HOLDREG(MODBUS_SAVE_DATA_START + 5, 	g_counter.set_max_interval.data.l);
 	MAP_MODBUS_HOLDREG(MODBUS_SAVE_DATA_START + 6, 	g_counter.set_door_close_interval.data.h);
@@ -133,6 +133,8 @@ void Modbus_RegMap(void)
 	for (i = 0; i < 12; i++){
 		MAP_MODBUS_HOLDREG(140 + i, g_counter.ch[i].process_step);
 	}
+	MAP_MODBUS_HOLDREG(499, g_counter.total_count_sum.data.h);
+	MAP_MODBUS_HOLDREG(500, g_counter.total_count_sum.data.l);
 	for (i = 0; i < 12; i++){
 		MAP_MODBUS_HOLDREG(524 + i, g_counter.view_IR_DA_value[i]);
 	}
@@ -179,22 +181,10 @@ void Modbus_RegMap(void)
 	save_para (0); //save_para(1) 保存参数save_para(0) 读取参数
 	Modbus_HoldReg_NULL = 999;
 }
+//
 
 
 
-
-//#define SPI_FLASH_REG_ADDR		(12*1024*1024)  	//第一个应用程序起始地址(存放在FLASH)
-//#define FLASH_DATA_ADDR		(13*1024*1024)  	//第一个应用程序起始地址(存放在FLASH)
-#define FLASH_REG_INFO_ADDR		(0x08070000)  	//
-#define FLASH_DATA_ADDR		(0x08078000)  	//第一个应用程序起始地址(存放在SPI FLASH)
-#define REG_SIZE 16
-typedef struct{
-	char reg_info[REG_SIZE];
-}s_reg_file;
-typedef struct{
-	uint16_t SAVE_DATA[MODBUS_SAVE_DATA_NUM];
-	uint16_t SAVE_DATA_EX[MODBUS_SAVE_DATA_NUM_EX];
-}s_para_data_file;
 
 void get_reg (s_reg_file *reg_file)
 {
@@ -275,6 +265,7 @@ int16_t save_para (int16_t flag)
 //check reg info*****************************************************************************
 	flag = check_reg_info (flag);
 //check reg info*****************************************************************************
+	read_para_from_flash (p_spi_flash_data);
 	if (flag > 0){//保存参数
 		for (i = 0; i < MODBUS_SAVE_DATA_NUM; i++){
 			p_spi_flash_data->SAVE_DATA[i] = *Modbus_HoldReg[MODBUS_SAVE_DATA_START + i];
@@ -284,7 +275,7 @@ int16_t save_para (int16_t flag)
 		}
 		save_para_to_flash (p_spi_flash_data);
 	}else if(flag == 0){//读取参数
-		read_para_from_flash (p_spi_flash_data);
+		check_para_flag (p_spi_flash_data);
 		for (i = 0; i < MODBUS_SAVE_DATA_NUM; i++){
 			*Modbus_HoldReg[MODBUS_SAVE_DATA_START + i] = p_spi_flash_data->SAVE_DATA[i];
 		}
@@ -306,37 +297,33 @@ int16_t save_para (int16_t flag)
 	return 0;
 }
 
-void check_data (void)
+void check_para_flag (s_para_data_file *p_spi_flash_data)
 {
-	int i;
-//	if (g_counter.set_pre_count_threshold > g_counter.set_count_new){
-//		g_counter.set_pre_count_threshold = 0;
-//	}
-//	if (g_counter.set_count_new < g_counter.set_pre_count_new){
-//		g_counter.set_pre_count_new = 0;
-//	}
-//	if (g_counter.set_door_close_interval.data_hl < 5){
-//		g_counter.set_door_close_interval.data_hl = 5;
-//	}
-//	for (i = 0; i < CHANEL_NUM; i++){
-//		if (g_counter.set_door_close_delay == 0){
-//			if (g_counter.set_door_n_close_delay[i] < 1){
-//				g_counter.set_door_n_close_delay[i] = 1;
-//			}
-//		}else{
-//			g_counter.set_door_n_close_delay[i] = g_counter.set_door_close_delay;
-//		}
-//		g_counter.ch[i].set_ch_door_close_delay = g_counter.set_door_n_close_delay[i];
-//	}
-//	for (i = 0; i < CHANEL_NUM; i++){
-//	if (g_counter.view_IR_DA_value[i] > 255){
-//		g_counter.view_IR_DA_value[i] = 150;
-//		g_counter.view_IR_DA_value[i] = 0;
-//	}
-//	g_counter.std_ref_value_old = g_counter.std_ref_value;
+	#define PARA_MAGIC_NUM 0xA5A2
+	int16_t i;
+	if (p_spi_flash_data->para_flag != PARA_MAGIC_NUM){
+		p_spi_flash_data->para_flag = PARA_MAGIC_NUM;
+		////////////////////////////////////////////////////////////////
+		STD_V_OFFSET = 50;
+		STD_REF_VALUE = 28000;
+		STD_REF_OFFSET = 200;
+		WAVE_DOWN = 8;
+		AD_MODE = 1;
+		////////////////////////////////////////////////////////////////
+		for (i = 0; i < MODBUS_SAVE_DATA_NUM; i++){
+			p_spi_flash_data->SAVE_DATA[i] = *Modbus_HoldReg[MODBUS_SAVE_DATA_START + i];
+		}
+		for (i = 0; i < MODBUS_SAVE_DATA_NUM_EX; i++){
+			p_spi_flash_data->SAVE_DATA_EX[i] = *Modbus_HoldReg[MODBUS_SAVE_DATA_START_EX + i];
+		}
+		save_para_to_flash (p_spi_flash_data);
+	}
 //	DATA_RANGE_CHECK ();
 }
 
+void check_data ()
+{
+}
 
 
 void modbus_init(void)

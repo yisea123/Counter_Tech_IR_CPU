@@ -7,6 +7,7 @@
 
 #define START_DATA 5
 #define PROCESS_RDY 15
+#define ADJ_PERIOD 200 //基准值调整周期
 
 
 //#define WAVE_DOWN 	g_counter.set_wave_down_flag //16
@@ -15,6 +16,7 @@
 #define WAVE_DOWN 	g_counter.set_wave_down_flag //
 #define WAVE_UP 	g_counter.set_wave_down_flag //
 #define WAVE_UP_V 	g_counter.set_wave_up_value //
+#define AD_MODE g_counter.set_adc_mode
 
 #define STD_REF_OFFSET (g_counter.std_ref_value_offset)
 #define STD_REF_VALUE (g_counter.std_ref_value)
@@ -168,6 +170,9 @@ typedef struct{
 	U16 std_down_v;
 	U16 std_up_v;
 	U16 std_v;
+	uint16_t old_std_index;
+	uint32_t old_std_v;
+	
 	U16 std_down_offset;
 	U16 std_up_offset;
 	U16 ad_min;

@@ -65,13 +65,15 @@ void TIM2_IRQHandler(void)   //TIM2中断
 ///////////////////////////////////Counter Task Poll/////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////
 		sys_run_time.data_hl++;
-		if ((sys_run_time.data_hl % 1000) == 0){			
+		if ((sys_run_time.data_hl % 100) == 0){		
 			if (process_rdy < (PROCESS_RDY - 1)){
 				process_rdy++;
 			}
 //			OSQPost(ad8804_msg, (void *) 0xaa);//
 //			chanel_pos_index++; //采样处理下一个光敏二极管
 //			chanel_pos_index %= CHANEL_SENSOR_NUM;
+		}
+		if ((sys_run_time.data_hl % 500) == 0){
 		}
 /////////////////////////////////////////////////////////////////////////////////////////////////
 	}

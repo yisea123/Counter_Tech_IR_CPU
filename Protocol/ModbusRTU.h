@@ -26,6 +26,20 @@
 #define HMI_RS485_TX_EN PAout(HMI_RS485_TX_EN_PIN)
 
 
+//#define SPI_FLASH_REG_ADDR		(12*1024*1024)  	//第一个应用程序起始地址(存放在FLASH)
+//#define FLASH_DATA_ADDR		(13*1024*1024)  	//第一个应用程序起始地址(存放在FLASH)
+#define FLASH_REG_INFO_ADDR		(0x08070000)  	//
+#define FLASH_DATA_ADDR		(0x08078000)  	//第一个应用程序起始地址(存放在SPI FLASH)
+#define REG_SIZE 16
+typedef struct{
+	char reg_info[REG_SIZE];
+}s_reg_file;
+typedef struct{
+	uint16_t para_flag;
+	uint16_t SAVE_DATA[MODBUS_SAVE_DATA_NUM];
+	uint16_t SAVE_DATA_EX[MODBUS_SAVE_DATA_NUM_EX];
+}s_para_data_file;
+
 extern uint16_t Modbus_HoldReg_CPU_Usage;
 
 
@@ -37,6 +51,7 @@ void set_Modbus_test_value (uint16_t value);
 void modbus_init(void);
 int16_t save_para (int16_t flag);
 int16_t load_para (void);
+void check_para_flag (s_para_data_file *p_spi_flash_data);
 void check_data (void);
 extern vu32 virtual_input[MODBUS_VIRTUAL_INPUT_NUM];
 

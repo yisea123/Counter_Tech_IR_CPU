@@ -200,15 +200,17 @@ uint32_t calibrate_IR_1 (void)
 	uint16_t value_updated;
 	
 	value_updated = 1;
-	//delay_ms(2000);
 	while (value_updated > 0){
 		value_updated = 0;
-		delay_ms(50);
+		delay_ms(10);
 		for(i = 0; i < CHANEL_NUM; i++){
 			if (After_filter[i] < STD_REF_VALUE_L){
 				if (g_counter.view_IR_DA_value[i] < 255){
 					g_counter.view_IR_DA_value[i]++;
 					value_updated++;
+				}else{
+					g_counter.system_status = DETECTOR_ERROR;
+					led_output (0);
 				}
 			}else if (After_filter[i] > STD_REF_VALUE_H){
 				if (g_counter.view_IR_DA_value[i] > 0){
@@ -233,6 +235,7 @@ void re_calibration_detect (void)
 #if OS_CRITICAL_METHOD == 3u                           /* Allocate storage for CPU status register     */
     OS_CPU_SR  cpu_sr = 0u;
 #endif
+	g_counter.system_status = IR_ADJ;
 	for (i = 0; i < CHANEL_NUM; i++){
 		//g_counter.view_IR_DA_value[i] = 0;
 	}
@@ -649,7 +652,14 @@ int detect_ad_value_process(s_chanel_info * _ch, U16 _ad_value_, U16 _ch_id)
 				}
 			}else{
 				_ch->ch_idle_time += dma_irq_cycle;
-				if (_ch->ch_idle_time > 1000*1000){
+				
+				if (_ch->ch_idle_time < ADJ_PERIOD * 1000){
+					_ch->old_std_index = 0;
+					_ch->old_std_v = 0;
+				}else if (_ch->ch_idle_time < (ADJ_PERIOD + 5) * 1000){
+					_ch->old_std_v += _ad_value_;
+					_ch->old_std_index++;
+				}else if (_ch->ch_idle_time > (ADJ_PERIOD * 2) * 1000){
 					if (_ad_value_ < STD_REF_VALUE_L){
 						if (g_counter.view_IR_DA_value[_ch_id] < 255){
 							g_counter.view_IR_DA_value[_ch_id]++;
@@ -657,7 +667,7 @@ int detect_ad_value_process(s_chanel_info * _ch, U16 _ad_value_, U16 _ch_id)
 						}
 					}
 					_ch->ch_idle_time = 0;
-					_ch->std_v = _ad_value_;
+					_ch->std_v = _ch->old_std_v / _ch->old_std_index;
 					_ch->std_up_v = _ch->std_v - STD_V_OFFSET;
 					_ch->std_down_v = _ch->std_v - STD_V_OFFSET;
 				}
@@ -718,6 +728,7 @@ int detect_ad_value_process(s_chanel_info * _ch, U16 _ad_value_, U16 _ch_id)
 				_ch->wave_up_flag = 0;
 				_ch->piece_in_status = 1;
 				_ch->cur_count++;
+				g_counter.total_count_sum.data_hl++;
 			}
 
 			break;
@@ -784,6 +795,10 @@ void DMA1_Channel1_IRQHandler(void)
 					}
 				}
 				process_rdy = PROCESS_RDY;
+				if (g_counter.system_status != DETECTOR_ERROR){
+					g_counter.system_status = RUNNING_OK;
+				}
+				led_output (0);
 //				COUNTER_FINISH_OP ();
 			}else{
 				process_rdy_old = process_rdy;
@@ -910,6 +925,7 @@ void counter_data_clear (void)
 	CHANEL_DATA_CLEAR(9);
 	CHANEL_DATA_CLEAR(10);
 	CHANEL_DATA_CLEAR(11);
+	g_counter.total_count_sum.data_hl = 0;
 	g_counter.max_len.data_hl = 0;
 	g_counter.max_close_door_interval.data_hl = 0;
 	g_counter.max_area_sum.data_hl = 0;

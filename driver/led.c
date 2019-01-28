@@ -50,4 +50,12 @@ void led_alarm (uint16_t flash_num, uint16_t flash_time, uint16_t cycle)
 		delay_ms(1900); 
 	}
 }
+//
+void led_output (uint16_t led_ctr)
+{
+	LED2 = ((led_ctr & 0x01) != 0) ? 0 : 1;
+	LED3 = ((led_ctr & 0x02) != 0) ? 0 : 1;
+	LED1 = ((led_ctr & 0x04) != 0) ? 0 : 1;
+}
+//
 

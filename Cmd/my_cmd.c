@@ -552,23 +552,16 @@ void print_ad_all (void)
 	while (1){
 		Rollback ();
 		my_println ("sys_run_time: %06d ms", sys_run_time.data_hl);  
-		my_println ("chanel_pos_index is %02d", chanel_pos_index);
-		my_println ("DA_V is %03d", DA_V);
-		for(i=0;i<12;i++){
+//		my_println ("chanel_pos_index is %02d", chanel_pos_index);
+		//           00:00055-255  0006 0007 0008 0007 0007 0006 0007 0007
+		my_println ("ID   AD   IR    0    1    2    3    4    5    6    7");
+		for(i = 0; i < 12; i++){
 			//value[i]= GetVolt(After_filter[i]);
-			my_print ("%02d:%05d-%03d  ", i, After_filter[i], ad8804_env.da_value[i]);
-			if (After_filter[i] < 20000){
-				if (ad8804_env.da_value[i] < 255){
-					ad8804_env.da_value[i]++;
-				}
-				ad8804_write_ch (ad8804_env.da_addr[i], ad8804_env.da_value[i]);
-			}else if (After_filter[i] > 20200){
-				if (ad8804_env.da_value[i] > 0){
-					ad8804_env.da_value[i]--;
-				}
-				ad8804_write_ch (ad8804_env.da_addr[i], ad8804_env.da_value[i]);
-			}
-			if ((i + 1) % 4 == 0)
+			my_print ("%02d:%05d-%03d  %04d %04d %04d %04d %04d %04d %04d %04d", 
+								i, After_filter[i], g_counter.view_IR_DA_value[i],
+								AD_DMA_buf.AD_Value_2[0][i], AD_DMA_buf.AD_Value_2[1][i], AD_DMA_buf.AD_Value_2[2][i], AD_DMA_buf.AD_Value_2[3][i], 
+								AD_DMA_buf.AD_Value_2[4][i], AD_DMA_buf.AD_Value_2[5][i], AD_DMA_buf.AD_Value_2[6][i], AD_DMA_buf.AD_Value_2[7][i]);
+			//if ((i + 1) % 4 == 0)
 				my_println ();
 		}
 		my_println ("------------------------------------------");
