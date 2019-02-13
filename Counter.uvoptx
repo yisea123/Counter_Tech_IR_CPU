@@ -120,7 +120,7 @@
         <SetRegEntry>
           <Number>0</Number>
           <Key>DLGUARM</Key>
-          <Name></Name>
+          <Name>鴁?$鮓</Name>
         </SetRegEntry>
         <SetRegEntry>
           <Number>0</Number>
@@ -154,7 +154,7 @@
           <Type>0</Type>
           <LineNumber>575</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134323896</Address>
+          <Address>134324116</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -170,7 +170,7 @@
           <Type>0</Type>
           <LineNumber>573</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134323890</Address>
+          <Address>134324110</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -186,7 +186,7 @@
           <Type>0</Type>
           <LineNumber>572</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134323884</Address>
+          <Address>134324104</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -202,7 +202,7 @@
           <Type>0</Type>
           <LineNumber>570</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134323878</Address>
+          <Address>134324098</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -218,7 +218,7 @@
           <Type>0</Type>
           <LineNumber>560</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134323754</Address>
+          <Address>134323974</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -234,7 +234,7 @@
           <Type>0</Type>
           <LineNumber>553</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134323730</Address>
+          <Address>134323950</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -248,34 +248,18 @@
         <Bp>
           <Number>6</Number>
           <Type>0</Type>
-          <LineNumber>304</LineNumber>
+          <LineNumber>228</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134316672</Address>
+          <Address>134312792</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>.\Protocol\ModbusRTU.c</Filename>
+          <Filename>.\driver\usart.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\Counter_Tech_IR_CPU\Protocol/ModbusRTU.c\304</Expression>
-        </Bp>
-        <Bp>
-          <Number>7</Number>
-          <Type>0</Type>
-          <LineNumber>278</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>134325782</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>1</BreakIfRCount>
-          <Filename>.\Protocol\ModbusRTU.c</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression>\\Counter_Tech_IR_CPU\Protocol/ModbusRTU.c\278</Expression>
+          <Expression>\\Counter_Tech_IR_CPU\driver/usart.c\228</Expression>
         </Bp>
       </Breakpoint>
       <WatchWindow1>

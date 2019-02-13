@@ -406,41 +406,41 @@ void led1_task(void *pdata)
 void debug_task(void *pdata) 
 { 
 	u8 err;	
-	uint8_t i;
+//	uint8_t i;
 	re_calibration_detect();
 	while (1)
 	{
 		
-		if ((uint32_t)OSQPend(ad8804_msg, 0, &err) == 0xaa){
-			LED3 = !LED3;
-			DA_V++;
-			if (DA_V > 50){
-				DA_V = 0;
+//////		if ((uint32_t)OSQPend(ad8804_msg, 0, &err) == 0xaa){
+//////			LED3 = !LED3;
+//////			DA_V++;
+//////			if (DA_V > 50){
+//////				DA_V = 0;
+//////			}
+//////			for (i = 0; i < 12; i++){
+//////				ad8804_write_ch (ad8804_env.da_addr[i], DA_V);
+//////			}
+//////		}
+		if ((uint32_t)OSQPend(debug_msg, 0, &err) == 0x55){
+			my_println ("start");
+			if (my_env.print == 0){
+				start_uart1_dma ((uint32_t)AD_buff.buffer, AD_BUFF_SIZE * 2);
+			}else if (my_env.print == 1){
+				start_uart1_dma (g_counter.buf_addr, g_counter.ch[g_counter.set_watch_ch].sample_size * 2);
 			}
-			for (i = 0; i < 12; i++){
-				ad8804_write_ch (ad8804_env.da_addr[i], DA_V);
+			//start_uart1_dma ((uint32_t)test_dma, sizeof (test_dma));
+		}
+		
+		if ((uint32_t)OSQPend(debug_msg, 0, &err) == 0xaa){
+			my_println ("\nend");
+			my_env.dma_state = 0;
+			memset (AD_buff.buffer, 0, AD_BUFF_SIZE);
+			if (my_env.print == 0){
+				AD_buff.buffer_en = AD_buff.cir;
+			}else{
+				AD_buff.buffer_en = 0;
 			}
 		}
-//		if ((uint32_t)OSQPend(debug_msg, 0, &err) == 0x55){
-//			my_println ("start");
-//			if (my_env.print == 0){
-////				start_uart1_dma ((uint32_t)AD_buff.buffer, AD_BUFF_SIZE * 2);
-//			}else if (my_env.print == 1){
-////				start_uart1_dma (g_counter.buf_addr, g_counter.ch[g_counter.set_watch_ch].sample_size * 2);
-//			}
-//			//start_uart1_dma ((uint32_t)test_dma, sizeof (test_dma));
-//		}
-//		
-//		if ((uint32_t)OSQPend(debug_msg, 0, &err) == 0xaa){
-//			my_println ("\nend");
-//			my_env.dma_state = 0;
-////			memset (AD_buff.buffer, 0, AD_BUFF_SIZE);
-//			if (my_env.print == 0){
-////				AD_buff.buffer_en = AD_buff.cir;
-//			}else{
-////				AD_buff.buffer_en = 0;
-//			}
-//		}
 	}
 } 
 

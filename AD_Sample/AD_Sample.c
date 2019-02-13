@@ -249,6 +249,7 @@ void re_calibration_detect (void)
 	for (i = 0; i < CHANEL_NUM; i++){
 		g_counter.ch[i].ad_max = 0;
 		g_counter.ch[i].ad_min = 0xFFFF;
+		g_counter.ch[i].process_step = 0;
 		g_counter.ch[i].std_v = 0;
 		g_counter.ch[i].std_down_v = 0;
 		g_counter.ch[i].ad_averaged_value = 0;

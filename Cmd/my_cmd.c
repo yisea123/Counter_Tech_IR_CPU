@@ -906,7 +906,18 @@ int do_set (cmd_tbl_t *cmdtp, int flag, int argc, char *argv[])
 	uint16_t data_temp, i;
 	switch (argc){
 		case 3:
-			if (strcmp (argv[1], "print") == 0){
+			if (strcmp (argv[1], "da") == 0){
+				dac1_set_vol (simple_strtoul(argv[2], NULL, 10));
+				break;
+			}else if (strcmp (argv[1], "watch") == 0){
+				data_temp = simple_strtoul(argv[2], NULL, 10);
+				if (data_temp < CHANEL_NUM){
+					g_counter.set_watch_ch = data_temp;
+				}else{
+					my_println ("chanel value must be 0 - %d", CHANEL_NUM);
+				}
+				break;
+			}else if (strcmp (argv[1], "print") == 0){
 				data_temp = simple_strtoul(argv[2], NULL, 10);
 				if (data_temp == 0 || data_temp == 1){
 					my_env.print = data_temp;
@@ -914,12 +925,24 @@ int do_set (cmd_tbl_t *cmdtp, int flag, int argc, char *argv[])
 					my_println ("print value must be 0 or 1");
 				}
 				break;
-			}else if ((strcmp (argv[1], "da") == 0)){
+			}else if (strcmp (argv[1], "trig") == 0){
 				data_temp = simple_strtoul(argv[2], NULL, 10);
-				data_temp %= 256;
-				my_println ("set DA_V = %d", data_temp);
-				for (i = 0; i < 12; i++){
-					ad8804_write_ch (ad8804_env.da_addr[i], data_temp);
+				if (data_temp == 1){
+					AD_buff.buffer_en = data_temp;
+				}else{
+					my_println ("trig value must 1");
+				}
+				break;
+			}else if (strcmp (argv[1], "run") == 0){
+				AD_buff.cir = 1;
+				AD_buff.buffer_en = 1;
+				break;
+			}else if (strcmp (argv[1], "cir") == 0){
+				data_temp = simple_strtoul(argv[2], NULL, 10);
+				if (data_temp == 0 || data_temp == 1){
+					AD_buff.cir = data_temp;
+				}else{
+					my_println ("cir value must 0 or 1");
 				}
 				break;
 			}
