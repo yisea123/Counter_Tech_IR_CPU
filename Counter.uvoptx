@@ -120,7 +120,7 @@
         <SetRegEntry>
           <Number>0</Number>
           <Key>DLGUARM</Key>
-          <Name>鴁?$鮓</Name>
+          <Name></Name>
         </SetRegEntry>
         <SetRegEntry>
           <Number>0</Number>
@@ -140,7 +140,7 @@
         <SetRegEntry>
           <Number>0</Number>
           <Key>DLGTARM</Key>
-          <Name>(1010=312,137,678,684,0)(1007=105,137,282,402,0)(1008=-1,-1,-1,-1,0)(1009=-1,-1,-1,-1,0)(100=-1,-1,-1,-1,0)(110=-1,-1,-1,-1,0)(111=-1,-1,-1,-1,0)(1011=-1,-1,-1,-1,0)(180=120,153,405,440,0)(120=637,133,1048,528,0)(121=869,325,1280,720,0)(122=75,104,486,499,0)(123=833,155,1244,550,0)(124=601,42,1012,437,0)(125=-1,-1,-1,-1,0)(126=-1,-1,-1,-1,0)(140=-1,-1,-1,-1,0)(240=-1,-1,-1,-1,0)(190=-1,-1,-1,-1,0)(200=-1,-1,-1,-1,0)(170=-1,-1,-1,-1,0)(130=-1,-1,-1,-1,0)(131=-1,-1,-1,-1,0)(132=-1,-1,-1,-1,0)(133=-1,-1,-1,-1,0)(160=-1,-1,-1,-1,0)(161=-1,-1,-1,-1,0)(162=-1,-1,-1,-1,0)(210=-1,-1,-1,-1,0)(211=-1,-1,-1,-1,0)(220=-1,-1,-1,-1,0)(221=-1,-1,-1,-1,0)(230=-1,-1,-1,-1,0)(231=-1,-1,-1,-1,0)(232=-1,-1,-1,-1,0)(233=-1,-1,-1,-1,0)(150=557,72,1150,696,0)(151=-1,-1,-1,-1,0)</Name>
+          <Name>(1010=312,137,678,684,0)(1007=105,137,282,402,0)(1008=-1,-1,-1,-1,0)(1009=-1,-1,-1,-1,0)(100=-1,-1,-1,-1,0)(110=-1,-1,-1,-1,0)(111=-1,-1,-1,-1,0)(1011=-1,-1,-1,-1,0)(180=120,153,405,440,0)(120=637,133,1048,528,0)(121=869,325,1280,720,0)(122=75,104,486,499,0)(123=833,155,1244,550,0)(124=590,105,1001,500,0)(125=-1,-1,-1,-1,0)(126=-1,-1,-1,-1,0)(140=-1,-1,-1,-1,0)(240=-1,-1,-1,-1,0)(190=-1,-1,-1,-1,0)(200=-1,-1,-1,-1,0)(170=-1,-1,-1,-1,0)(130=-1,-1,-1,-1,0)(131=-1,-1,-1,-1,0)(132=-1,-1,-1,-1,0)(133=-1,-1,-1,-1,0)(160=-1,-1,-1,-1,0)(161=-1,-1,-1,-1,0)(162=-1,-1,-1,-1,0)(210=-1,-1,-1,-1,0)(211=-1,-1,-1,-1,0)(220=-1,-1,-1,-1,0)(221=-1,-1,-1,-1,0)(230=-1,-1,-1,-1,0)(231=-1,-1,-1,-1,0)(232=-1,-1,-1,-1,0)(233=-1,-1,-1,-1,0)(150=557,72,1150,696,0)(151=-1,-1,-1,-1,0)</Name>
         </SetRegEntry>
         <SetRegEntry>
           <Number>0</Number>
@@ -152,114 +152,18 @@
         <Bp>
           <Number>0</Number>
           <Type>0</Type>
-          <LineNumber>575</LineNumber>
+          <LineNumber>217</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134324116</Address>
+          <Address>134316826</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>.\Cmd\my_cmd.c</Filename>
+          <Filename>.\AD_Sample\AD_Sample.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\Counter_Tech_IR_CPU\Cmd/my_cmd.c\575</Expression>
-        </Bp>
-        <Bp>
-          <Number>1</Number>
-          <Type>0</Type>
-          <LineNumber>573</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>134324110</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>1</BreakIfRCount>
-          <Filename>.\Cmd\my_cmd.c</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression>\\Counter_Tech_IR_CPU\Cmd/my_cmd.c\573</Expression>
-        </Bp>
-        <Bp>
-          <Number>2</Number>
-          <Type>0</Type>
-          <LineNumber>572</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>134324104</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>1</BreakIfRCount>
-          <Filename>.\Cmd\my_cmd.c</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression>\\Counter_Tech_IR_CPU\Cmd/my_cmd.c\572</Expression>
-        </Bp>
-        <Bp>
-          <Number>3</Number>
-          <Type>0</Type>
-          <LineNumber>570</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>134324098</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>1</BreakIfRCount>
-          <Filename>.\Cmd\my_cmd.c</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression>\\Counter_Tech_IR_CPU\Cmd/my_cmd.c\570</Expression>
-        </Bp>
-        <Bp>
-          <Number>4</Number>
-          <Type>0</Type>
-          <LineNumber>560</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>134323974</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>1</BreakIfRCount>
-          <Filename>.\Cmd\my_cmd.c</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression>\\Counter_Tech_IR_CPU\Cmd/my_cmd.c\560</Expression>
-        </Bp>
-        <Bp>
-          <Number>5</Number>
-          <Type>0</Type>
-          <LineNumber>553</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>134323950</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>1</BreakIfRCount>
-          <Filename>.\Cmd\my_cmd.c</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression>\\Counter_Tech_IR_CPU\Cmd/my_cmd.c\553</Expression>
-        </Bp>
-        <Bp>
-          <Number>6</Number>
-          <Type>0</Type>
-          <LineNumber>228</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>134312792</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>1</BreakIfRCount>
-          <Filename>.\driver\usart.c</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression>\\Counter_Tech_IR_CPU\driver/usart.c\228</Expression>
+          <Expression>\\Counter_Tech_IR_CPU\AD_Sample/AD_Sample.c\217</Expression>
         </Bp>
       </Breakpoint>
       <WatchWindow1>
@@ -319,6 +223,11 @@
           <count>0</count>
           <WinNumber>2</WinNumber>
           <ItemText>p_counter_module-&gt;rej_flag_buf</ItemText>
+        </Ww>
+        <Ww>
+          <count>1</count>
+          <WinNumber>2</WinNumber>
+          <ItemText>After_filter,0x0A</ItemText>
         </Ww>
       </WatchWindow2>
       <Tracepoint>

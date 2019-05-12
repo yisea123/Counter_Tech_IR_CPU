@@ -18,6 +18,8 @@
 #define WAVE_UP_V 	g_counter.set_wave_up_value //
 #define AD_MODE g_counter.set_adc_mode
 
+
+#define STD_UP_LIMIT_VALUE 30000
 #define STD_REF_OFFSET (g_counter.std_ref_value_offset)
 #define STD_REF_VALUE (g_counter.std_ref_value)
 #define STD_REF_VALUE_L (STD_REF_VALUE - STD_REF_OFFSET)
@@ -311,6 +313,8 @@ int AD_Sample_init (void);
 void calibrate_IR (void);
 uint32_t send_IR_value (void);
 void re_calibration_detect (void);
+void send_re_calibration_msg (void);
+void detect_check_func (void);
 u16 GetVolt(u16 advalue);
 extern u16 After_filter[CHANEL_NUM]; //用来存放求平均值之后的结果
 //extern vu16 Detect_Buf[DETECTG_BUF_GROUP][DETECTG_BUF_SIZE];

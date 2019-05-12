@@ -154,10 +154,15 @@ void ADC1_Configuration(void)
 
 uint32_t send_IR_value (void)
 {
+#if OS_CRITICAL_METHOD == 3u                           /* Allocate storage for CPU status register     */
+  OS_CPU_SR  cpu_sr = 0u;
+#endif
 	uint16_t i;
+	OS_ENTER_CRITICAL();
 	for (i = 0; i < 12; i++){
 		ad8804_write_ch (ad8804_env.da_addr[i], g_counter.view_IR_DA_value[i]);
 	}
+	OS_EXIT_CRITICAL();
 	return 0;
 }
 uint32_t calibrate_IR_0 (void)
@@ -167,19 +172,19 @@ uint32_t calibrate_IR_0 (void)
 	uint16_t value_updated;
 	
 	for(i = 0; i < CHANEL_NUM; i++){
-		value_updated = 1;
-		while (value_updated){//每个通道单独调压
-			value_updated = 0;
-			delay_ms(10);
+		value_updated = 0;
+		while (value_updated < 5){//每个通道单独调压
+			value_updated++;
+			delay_ms(500);
 			if (After_filter[i] < STD_REF_VALUE_L){
-				if (g_counter.view_IR_DA_value[i] < 160){
+				if (g_counter.view_IR_DA_value[i] < 250){
 					g_counter.view_IR_DA_value[i]++;
-					value_updated++;
+					value_updated = 0;
 				}
 			}else if (After_filter[i] > STD_REF_VALUE_H){
 				if (g_counter.view_IR_DA_value[i] > 0){
 					g_counter.view_IR_DA_value[i]--;
-					value_updated++;
+					value_updated = 0;
 				}
 			}
 			if (send_ad8804_ch_value (i, g_counter.view_IR_DA_value[i]) == 0){
@@ -199,23 +204,22 @@ uint32_t calibrate_IR_1 (void)
 	int i;
 	uint16_t value_updated;
 	
-	value_updated = 1;
-	while (value_updated > 0){
-		value_updated = 0;
-		delay_ms(10);
+	value_updated = 0;
+	while (value_updated < 5){//每个通道单独调压
+		value_updated++;
+		delay_ms(500);
 		for(i = 0; i < CHANEL_NUM; i++){
 			if (After_filter[i] < STD_REF_VALUE_L){
 				if (g_counter.view_IR_DA_value[i] < 255){
 					g_counter.view_IR_DA_value[i]++;
-					value_updated++;
+					value_updated = 0;
 				}else{
 					g_counter.system_status = DETECTOR_ERROR;
-					led_output (0);
 				}
 			}else if (After_filter[i] > STD_REF_VALUE_H){
 				if (g_counter.view_IR_DA_value[i] > 0){
 					g_counter.view_IR_DA_value[i]--;
-					value_updated++;
+					value_updated = 0;
 				}
 			}
 		}
@@ -226,8 +230,39 @@ uint32_t calibrate_IR_1 (void)
 void calibrate_IR (void)
 {
 	calibrate_IR_1 ();
-	//save_para (2);//强制保存
+	save_para (2);//强制保存
 }
+//
+void send_re_calibration_msg (void)
+{
+	g_counter.system_status = IR_ADJ;
+	virtual_input[1] = 0;
+	OSQPost(io_msg, (void *) 0xaa);//发送消息
+}
+//
+void send_ad_calibration_msg (void)
+{
+	g_counter.system_status = AD_ADJ;
+	process_rdy = 0;
+}
+//
+void detect_check_func (void)
+{
+	int i;
+	static int normal = 0;
+	for(i = 0; i < CHANEL_NUM; i++){
+		if (After_filter[i] > STD_UP_LIMIT_VALUE){
+			normal = 0;
+			send_re_calibration_msg ();
+		}
+	}
+	if (normal == 3){
+		normal = 0;
+		send_ad_calibration_msg ();
+	}
+	normal++;
+}
+//
 
 void re_calibration_detect (void)
 {
@@ -237,27 +272,31 @@ void re_calibration_detect (void)
 #endif
 	g_counter.system_status = IR_ADJ;
 	for (i = 0; i < CHANEL_NUM; i++){
-		//g_counter.view_IR_DA_value[i] = 0;
+		ad8804_write_ch (ad8804_env.da_addr[i], g_counter.view_IR_DA_value[i]);
 	}
+	delay_ms (1000);
+	process_rdy = PROCESS_RDY + PROCESS_RDY;
 	calibrate_IR ();
-//	COUNT_COMPLETE = 1;
-//	counter_reset ();
 	OS_ENTER_CRITICAL();
-//	COUNT_COMPLETE = 1;
-//	VIBRATE_SWITCH = VIB_STOP;
-
-	for (i = 0; i < CHANEL_NUM; i++){
-		g_counter.ch[i].ad_max = 0;
-		g_counter.ch[i].ad_min = 0xFFFF;
-		g_counter.ch[i].process_step = 0;
-		g_counter.ch[i].std_v = 0;
-		g_counter.ch[i].std_down_v = 0;
-		g_counter.ch[i].ad_averaged_value = 0;
-		for (j = 0; j < AD_FITTER_BUFF_SIZE; j++){
-			g_counter.ch[i].ad_fitter_buff[j] = 0;
+	if (g_counter.system_status != DETECTOR_ERROR){
+		led_output (0);
+		g_counter.system_status = CHECK_IR_STATUS;
+		for (i = 0; i < CHANEL_NUM; i++){
+			ad8804_write_ch (ad8804_env.da_addr[i], g_counter.view_IR_DA_value[i]);
+		}
+		delay_ms (1000);
+		for (i = 0; i < CHANEL_NUM; i++){
+			g_counter.ch[i].ad_max = 0;
+			g_counter.ch[i].ad_min = 0xFFFF;
+			g_counter.ch[i].process_step = 0;
+			g_counter.ch[i].std_v = 0;
+			g_counter.ch[i].std_down_v = 0;
+			g_counter.ch[i].ad_averaged_value = 0;
+			for (j = 0; j < AD_FITTER_BUFF_SIZE; j++){
+				g_counter.ch[i].ad_fitter_buff[j] = 0;
+			}
 		}
 	}
-	process_rdy = 0;
 	//AD_Sample_init ();
 	OS_EXIT_CRITICAL();
 }
@@ -661,16 +700,16 @@ int detect_ad_value_process(s_chanel_info * _ch, U16 _ad_value_, U16 _ch_id)
 					_ch->old_std_v += _ad_value_;
 					_ch->old_std_index++;
 				}else if (_ch->ch_idle_time > (ADJ_PERIOD * 2) * 1000){
-					if (_ad_value_ < STD_REF_VALUE_L){
-						if (g_counter.view_IR_DA_value[_ch_id] < 255){
-							g_counter.view_IR_DA_value[_ch_id]++;
-							ad8804_write_ch (ad8804_env.da_addr[_ch_id], g_counter.view_IR_DA_value[_ch_id]);
-						}
-					}
 					_ch->ch_idle_time = 0;
-					_ch->std_v = _ch->old_std_v / _ch->old_std_index;
-					_ch->std_up_v = _ch->std_v - STD_V_OFFSET;
-					_ch->std_down_v = _ch->std_v - STD_V_OFFSET;
+//					_ch->std_v = _ch->old_std_v / _ch->old_std_index;
+//					_ch->std_up_v = _ch->std_v - STD_V_OFFSET;
+//					_ch->std_down_v = _ch->std_v - STD_V_OFFSET;
+//					if (_ch->std_v < STD_REF_VALUE_L){
+//						if (g_counter.view_IR_DA_value[_ch_id] < 255){
+//							g_counter.view_IR_DA_value[_ch_id]++;
+//							ad8804_write_ch (ad8804_env.da_addr[_ch_id], g_counter.view_IR_DA_value[_ch_id]);
+//						}
+//					}
 				}
 				_ch->wave_down_flag = 0;
 				_ch->sample_index = 0;
@@ -795,15 +834,17 @@ void DMA1_Channel1_IRQHandler(void)
 						g_counter.ch[i].std_down_v = g_counter.ch[i].std_v;
 					}
 				}
-				process_rdy = PROCESS_RDY;
 				if (g_counter.system_status != DETECTOR_ERROR){
+					process_rdy = PROCESS_RDY;
 					g_counter.system_status = RUNNING_OK;
+					counter_data_clear ();
+				}else{
+					process_rdy = 2*PROCESS_RDY;
 				}
-				led_output (0);
-//				COUNTER_FINISH_OP ();
-			}else{
+			}else {
 				process_rdy_old = process_rdy;
 			}
+			ALL_EXT_OUTPUT (0);
 		}else{
 		//////////////////////////////////////////////////////////////////////////////////
 		//////////////////////////////// process begin ///////////////////////////////////
@@ -820,27 +861,29 @@ void DMA1_Channel1_IRQHandler(void)
 			AD_FILTER (After_filter, g_counter.AD_buf_p, 9, SAMPLE_NUM);
 			AD_FILTER (After_filter, g_counter.AD_buf_p, 10, SAMPLE_NUM);
 			AD_FILTER (After_filter, g_counter.AD_buf_p, 11, SAMPLE_NUM);
-
+			if ((process_rdy) == PROCESS_RDY){
 			//After_filter[0] = g_counter.sim_ad_value;
-			r_code += detect_ad_value_process (&g_counter.ch[0], After_filter[0], 0);
-			r_code += detect_ad_value_process (&g_counter.ch[1], After_filter[1], 1);
-			r_code += detect_ad_value_process (&g_counter.ch[2], After_filter[2], 2);
-			r_code += detect_ad_value_process (&g_counter.ch[3], After_filter[3], 3);
-			r_code += detect_ad_value_process (&g_counter.ch[4], After_filter[4], 4);
-			r_code += detect_ad_value_process (&g_counter.ch[5], After_filter[5], 5);
-			r_code += detect_ad_value_process (&g_counter.ch[6], After_filter[6], 6);
-			r_code += detect_ad_value_process (&g_counter.ch[7], After_filter[7], 7);
-			r_code += detect_ad_value_process (&g_counter.ch[8], After_filter[8], 8);
-			r_code += detect_ad_value_process (&g_counter.ch[9], After_filter[9], 9);
-			r_code += detect_ad_value_process (&g_counter.ch[10], After_filter[10], 10);
-			r_code += detect_ad_value_process (&g_counter.ch[11], After_filter[11], 11);
+				r_code += detect_ad_value_process (&g_counter.ch[0], After_filter[0], 0);
+				r_code += detect_ad_value_process (&g_counter.ch[1], After_filter[1], 1);
+				r_code += detect_ad_value_process (&g_counter.ch[2], After_filter[2], 2);
+				r_code += detect_ad_value_process (&g_counter.ch[3], After_filter[3], 3);
+				r_code += detect_ad_value_process (&g_counter.ch[4], After_filter[4], 4);
+				r_code += detect_ad_value_process (&g_counter.ch[5], After_filter[5], 5);
+				r_code += detect_ad_value_process (&g_counter.ch[6], After_filter[6], 6);
+				r_code += detect_ad_value_process (&g_counter.ch[7], After_filter[7], 7);
+				r_code += detect_ad_value_process (&g_counter.ch[8], After_filter[8], 8);
+				r_code += detect_ad_value_process (&g_counter.ch[9], After_filter[9], 9);
+				r_code += detect_ad_value_process (&g_counter.ch[10], After_filter[10], 10);
+				r_code += detect_ad_value_process (&g_counter.ch[11], After_filter[11], 11);
+			#ifdef USE_AS_COUNTER 
+				COUNT_PIECES ();
+			#else
+				OUTPUT_ALL_PIECE_SIGNAL();
+			#endif
+			}else{
+				ALL_EXT_OUTPUT (0);
+			}
 						
-		#ifdef USE_AS_COUNTER 
-			COUNT_PIECES ();
-		#else
-			OUTPUT_ALL_PIECE_SIGNAL();
-		#endif
-
 			if (my_env.print == 1){
 				if (r_code != 0){
 				}else if (g_counter.ch[g_counter.set_watch_ch].state == CH_DATA_RDY){

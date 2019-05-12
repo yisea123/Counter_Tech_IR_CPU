@@ -95,18 +95,48 @@
 									OUTPUT8 | OUTPUT9 | OUTPUT10 | OUTPUT11 | \
 									OUTPUT12 | OUTPUT13 | OUTPUT14 | OUTPUT15
 
-#define EXT_OUT0  PEout(0)
-#define EXT_OUT1  PEout(1)
-#define EXT_OUT2  PEout(2)
-#define EXT_OUT3  PEout(3)
+//#define EXT_OUT0  PEout(9)
+//#define EXT_OUT1  PEout(8)
+//#define EXT_OUT2  PEout(7)
+//#define EXT_OUT3  PEout(0)
+//#define EXT_OUT4  PEout(1)
+//#define EXT_OUT5  PEout(2)
+//#define EXT_OUT6  PEout(3)
+//#define EXT_OUT7  PEout(4)
+//#define EXT_OUT8  PEout(5)
+//#define EXT_OUT9  PEout(6)
+//#define EXT_OUT10 PEout(12)
+//#define EXT_OUT11 PEout(13)
+
+#define EXT_OUT0  PEout(13)
+#define EXT_OUT1  PEout(12)
+#define EXT_OUT2  PEout(6)
+#define EXT_OUT3  PEout(5)
 #define EXT_OUT4  PEout(4)
-#define EXT_OUT5  PEout(5)
-#define EXT_OUT6  PEout(6)
-#define EXT_OUT7  PEout(7)
-#define EXT_OUT8  PEout(8)
-#define EXT_OUT9  PEout(9)
-#define EXT_OUT10 PEout(10)
-#define EXT_OUT11 PEout(11)
+#define EXT_OUT5  PEout(3)
+#define EXT_OUT6  PEout(2)
+#define EXT_OUT7  PEout(1)
+#define EXT_OUT8  PEout(0)
+#define EXT_OUT9  PEout(7)
+#define EXT_OUT10 PEout(8)
+#define EXT_OUT11 PEout(9)
+
+#define EXT_OUTPUT(CH,V) EXT_OUT##CH = V;
+
+#define ALL_EXT_OUTPUT(V) { \
+	EXT_OUTPUT(0, V); \
+	EXT_OUTPUT(1, V); \
+	EXT_OUTPUT(2, V); \
+	EXT_OUTPUT(3, V); \
+	EXT_OUTPUT(4, V); \
+	EXT_OUTPUT(5, V); \
+	EXT_OUTPUT(6, V); \
+	EXT_OUTPUT(7, V); \
+	EXT_OUTPUT(8, V); \
+	EXT_OUTPUT(9, V); \
+	EXT_OUTPUT(10, V); \
+	EXT_OUTPUT(11, V); \
+}
 
 
 

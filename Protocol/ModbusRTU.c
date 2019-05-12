@@ -304,9 +304,9 @@ void check_para_flag (s_para_data_file *p_spi_flash_data)
 	if (p_spi_flash_data->para_flag != PARA_MAGIC_NUM){
 		p_spi_flash_data->para_flag = PARA_MAGIC_NUM;
 		////////////////////////////////////////////////////////////////
-		STD_V_OFFSET = 50;
-		STD_REF_VALUE = 28000;
-		STD_REF_OFFSET = 200;
+		STD_V_OFFSET = 500;
+		STD_REF_VALUE = 25000;
+		STD_REF_OFFSET = 250;
 		WAVE_DOWN = 8;
 		AD_MODE = 1;
 		////////////////////////////////////////////////////////////////
@@ -323,6 +323,12 @@ void check_para_flag (s_para_data_file *p_spi_flash_data)
 
 void check_data ()
 {
+	int i;
+	for (i = 0; i < CHANEL_NUM; i++){
+		if (g_counter.view_IR_DA_value[i] > 250){
+			g_counter.view_IR_DA_value[i] = 250;
+		}
+	}
 }
 
 

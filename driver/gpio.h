@@ -2,12 +2,12 @@
 #define __GPIO_H__
 
 
-#define LED1_MAP GPIO_Pin_6
+#define LED1_MAP GPIO_Pin_9
 #define LED2_MAP GPIO_Pin_8
 #define LED3_MAP GPIO_Pin_7
 
 ////////////////////////////////////////////////// 
-#define LED1 PBout(6)// 
+#define LED1 PBout(9)// 
 #define LED2 PBout(8)// 
 #define LED3 PBout(7)// 
 

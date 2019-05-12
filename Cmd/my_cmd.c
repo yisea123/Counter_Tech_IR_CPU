@@ -903,7 +903,7 @@ int send_ad8804_ch_value (uint8_t ch, uint16_t value)
 }
 int do_set (cmd_tbl_t *cmdtp, int flag, int argc, char *argv[])
 {	
-	uint16_t data_temp, i;
+	uint16_t data_temp;
 	switch (argc){
 		case 3:
 			if (strcmp (argv[1], "da") == 0){

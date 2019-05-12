@@ -379,17 +379,22 @@ void led1_task(void *pdata)
 				case RUNNING_OK:
 					led_alarm (1, 20, 1000);
 					break;
-				case COUNTER_ERROR:
-					led_alarm (2, 200, 2000);
+				case CHECK_IR_STATUS:
+					detect_check_func ();
+					led_alarm (2, 200, 1000);
 					break;
-				case STATUS_ERROR:
+				case AD_ADJ:
 					led_alarm (3, 200, 2000);
 					break;
 				case ADC_TIME_ERROR:
 					led_alarm (4, 200, 2000);
 					break;
 				case DETECTOR_ERROR:
+					led_output (0);
+					delay_ms(1000); 
 					led_alarm (5, 200, 2000);
+					delay_ms(1000); 
+					send_re_calibration_msg ();
 					break;
 				default:break;
 			}

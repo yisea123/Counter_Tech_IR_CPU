@@ -65,7 +65,7 @@ void TIM2_IRQHandler(void)   //TIM2ÖÐ¶Ï
 ///////////////////////////////////Counter Task Poll/////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////
 		sys_run_time.data_hl++;
-		if ((sys_run_time.data_hl % 100) == 0){		
+		if ((sys_run_time.data_hl % 500) == 0){		
 			if (process_rdy < (PROCESS_RDY - 1)){
 				process_rdy++;
 			}
